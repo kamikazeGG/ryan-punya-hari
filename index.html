@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ryan Punya Hari</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/svg"
+      sizes="32x32"
+      href="assets/fluent-emoji-high-contrast--birthday-cake.svg"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+      }
+
+      /* Animasi untuk tombol */
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .button-animation {
+        animation: bounce 1.5s infinite;
+      }
+
+      /* Efek confetti */
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #ff0;
+        clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        animation: confetti-fall 5s linear infinite;
+        z-index: 1000;
+      }
+
+      @keyframes confetti-fall {
+        0% {
+          transform: translateY(-10px) rotate(0deg);
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-green-200 flex items-center justify-center h-screen">
+    <!-- Audio Element -->
+    <audio
+      id="birthdaySong"
+      src="assets/happy birthday too you versi india.mp3"
+      preload="auto"
+    ></audio>
+
+    <!-- Passcode Page -->
+    <div
+      id="passcodePage"
+      class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border-t-4 border-green-600"
+    >
+      <h1 class="text-2xl font-bold mb-6 text-green-700">
+        Masukkan Kode Keamanan
+      </h1>
+
+      <div class="mb-6">
+        <input
+          type="password"
+          id="passcodeInput"
+          class="w-full px-4 py-3 rounded-lg border-2 border-green-200 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-30 bg-green-50 focus:outline-none transition-all duration-200"
+          placeholder="Masukkan kode"
+        />
+      </div>
+
+      <button
+        onclick="checkPasscode()"
+        class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+      >
+        Submit
+      </button>
+
+      <div class="w-full mt-6 text-center">
+        <p class="text-gray-400 italic text-xs">print("ryanganteng123")</p>
+      </div>
+
+      <p
+        id="errorMessage"
+        class="hidden text-red-500 mt-4 text-center animate-shake"
+      >
+        Kode salah, coba lagi!
+      </p>
+    </div>
+
+    <!-- Content Page -->
+    <div
+      id="contentPage"
+      class="bg-green-500 text-white p-8 shadow-lg text-center w-screen h-screen grid items-center justify-center relative hidden"
+    >
+      <button
+        class="text-2xl bg-white text-green-500 px-6 py-3 rounded-full shadow-lg button-animation hover:bg-green-100 transition-colors font-bold"
+        onclick="showBirthdayPage()"
+      >
+        PENCET BRO
+      </button>
+    </div>
+
+    <!-- Birthday Page -->
+    <div
+      id="birthdayPage"
+      class="text-white p-0 m-0 w-full h-screen flex items-center justify-center overflow-hidden hidden relative"
+    >
+      <div class="flex flex-col items-center justify-center w-full h-full">
+        <h3
+          class="text-3xl md:text-4xl p-3 md:p-5 font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 animate-pulse tracking-wider uppercase drop-shadow-lg"
+        >
+          HAPPY BIRTHDAY YAYAYAYAY
+        </h3>
+        <div class="flex justify-center items-center w-full">
+          <img
+            src="assets/ryan.png"
+            alt="ryangeming"
+            class="w-4/5 sm:w-3/5 md:w-2/5 lg:w-1/3 xl:w-1/4 object-contain"
+          />
+        </div>
+        <!-- Tombol pemutar musik di bawah gambar -->
+        <button
+          id="playMusicButton"
+          class="mt-6 bg-white text-pink-500 px-6 py-3 rounded-full shadow-lg hover:bg-pink-100 transition-colors font-bold hidden"
+          onclick="playBirthdaySong()"
+        >
+          Putar Musik
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const passcodeInput = document.getElementById("passcodeInput");
+      let timeoutId;
+
+      // Fungsi untuk mengubah tipe input menjadi text sementara
+      function showPasswordTemporarily() {
+        passcodeInput.type = "text"; // Ubah ke text agar terlihat
+        clearTimeout(timeoutId); // Hapus timeout sebelumnya (jika ada)
+        timeoutId = setTimeout(() => {
+          passcodeInput.type = "password"; // Kembalikan ke password setelah 0.6 detik
+        }, 600);
+      }
+
+      // Event listener untuk memantau input
+      passcodeInput.addEventListener("input", showPasswordTemporarily);
+
+      // Fungsi untuk memeriksa passcode
+      function checkPasscode() {
+        const correctPasscode = "ryanganteng123"; // Kode yang benar
+        const inputPasscode = passcodeInput.value;
+        const errorMessage = document.getElementById("errorMessage");
+        const passcodePage = document.getElementById("passcodePage");
+        const contentPage = document.getElementById("contentPage");
+
+        if (inputPasscode === correctPasscode) {
+          passcodePage.classList.add("hidden");
+          contentPage.classList.remove("hidden");
+        } else {
+          passcodeInput.value = "";
+          errorMessage.classList.remove("hidden");
+          setTimeout(() => {
+            errorMessage.classList.add("hidden");
+          }, 3000); // Sembunyikan pesan error setelah 3 detik
+        }
+      }
+
+      // Event listener untuk tombol Enter
+      passcodeInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          checkPasscode(); // Jalankan fungsi checkPasscode
+        }
+      });
+
+      // Fungsi untuk menampilkan halaman ulang tahun
+      function showBirthdayPage() {
+        // Sembunyikan halaman saat ini
+        const contentPage = document.getElementById("contentPage");
+        contentPage.classList.add("hidden");
+
+        // Tampilkan halaman ulang tahun
+        const birthdayPage = document.getElementById("birthdayPage");
+        birthdayPage.classList.remove("hidden");
+
+        // Mulai memutar lagu
+        const birthdaySong = document.getElementById("birthdaySong");
+        const playMusicButton = document.getElementById("playMusicButton");
+
+        if (birthdaySong) {
+          birthdaySong.play().catch((error) => {
+            console.log("Autoplay prevented:", error);
+            // Tampilkan tombol play jika autoplay diblokir
+            playMusicButton.classList.remove("hidden");
+          });
+        }
+
+        // Tambahkan efek confetti
+        createConfetti();
+      }
+
+      // Fungsi untuk memutar lagu secara manual
+      function playBirthdaySong() {
+        const birthdaySong = document.getElementById("birthdaySong");
+        if (birthdaySong) {
+          birthdaySong.play();
+          // Sembunyikan tombol setelah lagu diputar
+          const playMusicButton = document.getElementById("playMusicButton");
+          playMusicButton.classList.add("hidden");
+        }
+      }
+
+      // Fungsi untuk membuat efek confetti
+      function createConfetti() {
+        const colors = ["#ff0", "#f0f", "#0ff", "#f00", "#0f0", "#00f"];
+        const confettiCount = 100;
+        const birthdayPage = document.getElementById("birthdayPage");
+
+        // Hapus confetti sebelumnya jika ada
+        const existingConfetti = birthdayPage.querySelectorAll(".confetti");
+        existingConfetti.forEach((conf) => conf.remove());
+
+        for (let i = 0; i < confettiCount; i++) {
+          const confetti = document.createElement("div");
+          confetti.classList.add("confetti");
+          confetti.style.left = `${Math.random() * 100}%`;
+          confetti.style.top = "0";
+          confetti.style.width = `${5 + Math.random() * 10}px`;
+          confetti.style.height = `${5 + Math.random() * 10}px`;
+          confetti.style.animationDelay = `${Math.random() * 5}s`;
+          confetti.style.animationDuration = `${3 + Math.random() * 4}s`;
+          confetti.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+          birthdayPage.appendChild(confetti);
+        }
+      }
+    </script>
+  </body>
+</html>
